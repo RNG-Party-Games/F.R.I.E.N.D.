@@ -92,6 +92,7 @@ public class UIManager : MonoBehaviour
     public void OpenResources() {
         CalcButtons();
         resourceUI.gameObject.SetActive(true);
+        Camera.main.GetComponent<CameraController>().LockCam(false);
         game.weight = 0;
         ui.weight = 1;
         staminabar.SetActive(false);
@@ -106,6 +107,7 @@ public class UIManager : MonoBehaviour
 
     public void CloseResources() {
         resourceUI.gameObject.SetActive(false);
+        Camera.main.GetComponent<CameraController>().LockCam(true);
         game.weight = 1;
         ui.weight = 0;
         staminabar.SetActive(true);
