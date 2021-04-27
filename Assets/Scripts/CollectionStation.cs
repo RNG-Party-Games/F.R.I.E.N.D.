@@ -15,7 +15,7 @@ public class CollectionStation : MonoBehaviour
 
     int[,] antennaUpgrades = new int[,] { { 0, 1, 1, 0, 0, 0 }, { 0, 2, 2, 0, 0, 1 }, { 0, 3, 4, 0, 0, 2 }, { 0, 4, 4, 0, 0, 3 }, { 0, 5, 6, 0, 0, 3 } }; // 5
     int[,] storageUpgrades = new int[,] { { 1, 1, 0, 1, 0, 0 }, { 3, 4, 0, 1, 0, 0 }, { 5, 5, 0, 1, 0, 0 }, { 7, 6, 0, 2, 0, 0 } }; // 4
-    int[,] speedUpgrades = new int[,] { { 0, 2, 0, 1, 0, 0 }, { 0, 4, 0, 2, 0, 0 }, { 0, 7, 0, 3, 0, 0 } }; // 3
+    int[,] speedUpgrades = new int[,] { { 0, 2, 0, 1, 0, 0 }, { 0, 4, 0, 2, 0, 0 } }; // 3
     int[,] batteryUpgrades = new int[,] { { 2, 1, 0, 0, 1, 0 }, { 3, 2, 0, 0, 2, 0 }, { 5, 2, 0, 0, 3, 0 }, { 6, 3, 0, 0, 4, 0 } }; // 4
     int[,] magnetUpgrades = new int[,] { { 2, 0, 0, 0, 0, 0 }, { 4, 0, 0, 0, 0, 0 } }; // 2
 
@@ -72,6 +72,9 @@ public class CollectionStation : MonoBehaviour
         int[][,] modules = { antennaUpgrades, storageUpgrades, speedUpgrades, batteryUpgrades, magnetUpgrades };
         int[] progress = { Player.instance.distanceProgress, Player.instance.GetStorage() - 1, Player.instance.speedProgress, Player.instance.batteryProgress, Player.instance.magnetProgress };
         for(int i = 0; i < resources.Length; ++i) {
+            if(progress[index]*6 >= modules[index].Length) {
+                return false;
+            }
             if(resources[i] < modules[index][progress[index], i]) {
                 return false;
             }
@@ -88,6 +91,7 @@ public class CollectionStation : MonoBehaviour
             Player.instance.IncreaseRange();
         }
         UIManager.instance.CalcButtons();
+        UIManager.instance.SetResources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5]);
     }
 
     public void UpgradeStorage() {
@@ -99,6 +103,7 @@ public class CollectionStation : MonoBehaviour
             Player.instance.IncreaseStorage();
         }
         UIManager.instance.CalcButtons();
+        UIManager.instance.SetResources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5]);
     }
 
     public void UpgradeSpeed() {
@@ -110,6 +115,7 @@ public class CollectionStation : MonoBehaviour
             Player.instance.IncreaseSpeed();
         }
         UIManager.instance.CalcButtons();
+        UIManager.instance.SetResources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5]);
     }
 
     public void UpgradeBattery() {
@@ -121,6 +127,7 @@ public class CollectionStation : MonoBehaviour
             Player.instance.IncreaseBattery();
         }
         UIManager.instance.CalcButtons();
+        UIManager.instance.SetResources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5]);
     }
 
     public void UpgradeMagnet() {
@@ -132,6 +139,7 @@ public class CollectionStation : MonoBehaviour
             Player.instance.IncreaseMagnet();
         }
         UIManager.instance.CalcButtons();
+        UIManager.instance.SetResources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5]);
     }
 
     void UpgradeAdvance() {
@@ -156,7 +164,10 @@ public class CollectionStation : MonoBehaviour
         int[] progress = { Player.instance.distanceProgress, Player.instance.GetStorage() - 1, Player.instance.speedProgress, Player.instance.batteryProgress, Player.instance.magnetProgress };
         string text = "";
         int lines = 0;
-        for(int i = 0; i < resources.Length; ++i) {
+        if (progress[index] * 6 >= modules[index].Length) {
+            return "MAX";
+        }
+        for (int i = 0; i < resources.Length; ++i) {
             int req = modules[index][progress[index], i];
             if (req > 0) { // there is a resource required here
                 if(lines > 0) {

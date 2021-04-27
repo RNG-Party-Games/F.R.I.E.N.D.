@@ -133,7 +133,7 @@ public class Player : MonoBehaviour
                 LetGoObject();
                 hover = null;
             }
-            if (Magnetized() && hover != null) {
+            if (Magnetized() && hover != null && !snap.Snapped()) {
                 GrabObject();
             }
             if (Input.GetMouseButtonDown(0)) {

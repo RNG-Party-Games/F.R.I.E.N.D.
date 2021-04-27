@@ -10,7 +10,7 @@ public class MagneticObject : MonoBehaviour
     bool magnetic = false;
     float lastSnapped = -100;
     public Sprite icon;
-    Vector3 initScale;
+    Vector3 initScale, initPosition;
     public ParticleSystem magnetParticles;
     bool snapped = false;
     public enum ItemType { Ore, Scrap, Radio, Gear, Battery, Chip, Collectible };
@@ -22,13 +22,17 @@ public class MagneticObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         c = GetComponent<Collider>();
         initScale = transform.localScale;
+        initPosition = transform.position;
         magnetParticles.Play();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(transform.position.y < -100 ) {
+            transform.position = initPosition;
+            rb.velocity = Vector3.zero;
+        }
     }
 
     public void Magnetize(Material magnetmat, bool magnet) {
@@ -50,6 +54,7 @@ public class MagneticObject : MonoBehaviour
 
     public void Pull(Vector3 pos, float strength) {
         rb.useGravity = false;
+        rb.isKinematic = false;
         rb.AddForce((pos - transform.position) * strength, ForceMode.Force);
     }
 
@@ -104,6 +109,7 @@ public class MagneticObject : MonoBehaviour
             c.enabled = false;
             rb.useGravity = false;
             rb.isKinematic = true;
+            Debug.Log(rb.isKinematic);
             transform.position = t.position;
             transform.parent = t;
             lastSnapped = Time.time;
